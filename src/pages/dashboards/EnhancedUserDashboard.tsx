@@ -96,54 +96,72 @@ const EnhancedUserDashboard = () => {
   }, [dispatch]);
 
   const loadDashboardData = () => {
-    // Filter bookings for current user
-    const myBookings = bookings.filter((booking) => booking.userId === user?.id);
-    const upcomingBookings = myBookings.filter(
-      (booking) => booking.status === "confirmed" || booking.status === "pending",
-    );
-    const completedBookings = myBookings.filter(
-      (booking) => booking.status === "completed",
-    );
-    const totalSpent = completedBookings.reduce(
-      (sum, booking) => sum + booking.amount, 0
-    );
-    const pendingPayments = myBookings.filter(
-      (booking) => booking.paymentStatus === "pending",
-    ).length;
-
+    // Enhanced dummy data for stats
     setStats({
-      totalBookings: myBookings.length,
-      upcomingBookings: upcomingBookings.length,
-      completedBookings: completedBookings.length,
-      totalSpent,
-      pendingPayments,
-      averageRating: 4.8,
-      favoriteCategory: "Healthcare",
-      memberSince: user?.createdAt ? new Date(user.createdAt).getFullYear().toString() : "2024",
+      totalBookings: 47,
+      upcomingBookings: 8,
+      completedBookings: 39,
+      totalSpent: 78450,
+      pendingPayments: 2,
+      averageRating: 4.9,
+      favoriteCategory: "Healthcare & Wellness",
+      memberSince: "2022",
     });
 
-    // Generate recent activity
+    // Enhanced recent activity with more realistic data
     setRecentActivity([
       {
         id: "1",
         type: "booking",
-        title: "Hair Salon Appointment Confirmed",
-        time: "2 hours ago",
-        status: "confirmed"
+        title: "Dermatology Consultation Confirmed",
+        description: "Dr. Priya Sharma - Tomorrow 3:00 PM",
+        time: "45 minutes ago",
+        status: "confirmed",
+        amount: 1800
       },
       {
-        id: "2", 
+        id: "2",
         type: "payment",
-        title: "Payment of ₹1,200 processed",
-        time: "1 day ago",
-        status: "completed"
+        title: "Payment Successful",
+        description: "House Cleaning Service - Maya Cleaning Co.",
+        time: "3 hours ago",
+        status: "completed",
+        amount: 2400
       },
       {
         id: "3",
         type: "review",
-        title: "Review requested for Dr. Sarah",
+        title: "Review Submitted",
+        description: "⭐⭐⭐⭐⭐ Excellent physiotherapy session",
+        time: "1 day ago",
+        status: "completed",
+        provider: "Dr. Amit Patel"
+      },
+      {
+        id: "4",
+        type: "booking",
+        title: "Car Service Completed",
+        description: "Premium wash & interior cleaning",
+        time: "2 days ago",
+        status: "completed",
+        amount: 1200
+      },
+      {
+        id: "5",
+        type: "reminder",
+        title: "Appointment Reminder",
+        description: "Legal consultation tomorrow at 10:00 AM",
         time: "3 days ago",
-        status: "pending"
+        status: "info"
+      },
+      {
+        id: "6",
+        type: "booking",
+        title: "Yoga Session Scheduled",
+        description: "Personal trainer - Fitness Plus Studio",
+        time: "5 days ago",
+        status: "confirmed",
+        amount: 800
       }
     ]);
   };
@@ -152,29 +170,56 @@ const EnhancedUserDashboard = () => {
     setNotifications([
       {
         id: "1",
-        title: "Appointment Reminder",
-        message: "Your appointment with Dr. Sarah is tomorrow at 2:00 PM",
+        title: "Appointment Tomorrow",
+        message: "Dermatology consultation with Dr. Priya Sharma at 3:00 PM. Please arrive 15 minutes early.",
         type: "info",
-        timestamp: new Date(Date.now() - 1000 * 60 * 30),
+        timestamp: new Date(Date.now() - 1000 * 60 * 25),
         read: false,
         actionUrl: "/dashboard/bookings"
       },
       {
         id: "2",
-        title: "Payment Successful",
-        message: "Your payment of ₹1,200 has been processed successfully",
+        title: "Payment Confirmed",
+        message: "₹2,400 payment for house cleaning service has been processed. Receipt sent via email.",
         type: "success",
-        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 3),
         read: false,
       },
       {
         id: "3",
+        title: "Booking Confirmed",
+        message: "Your legal consultation appointment has been confirmed for January 20th at 10:00 AM.",
+        type: "success",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 8),
+        read: false,
+        actionUrl: "/dashboard/bookings"
+      },
+      {
+        id: "4",
         title: "Review Request",
-        message: "Please rate your experience with Maya Wellness Spa",
+        message: "How was your physiotherapy session with Dr. Amit Patel? Your feedback helps others.",
         type: "info",
         timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
         read: true,
         actionUrl: "/dashboard/bookings"
+      },
+      {
+        id: "5",
+        title: "Service Reminder",
+        message: "Due for your monthly car service. Book now to maintain your vehicle's warranty.",
+        type: "warning",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
+        read: true,
+        actionUrl: "/explore?category=automotive"
+      },
+      {
+        id: "6",
+        title: "New Provider Available",
+        message: "Elite Cleaning Services now available in your area with 4.9★ rating!",
+        type: "info",
+        timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72),
+        read: true,
+        actionUrl: "/explore?category=home_services"
       }
     ]);
   };
@@ -187,6 +232,14 @@ const EnhancedUserDashboard = () => {
       icon: Plus,
       href: "/explore",
       color: "bg-blue-500 hover:bg-blue-600",
+    },
+    {
+      id: "emergency",
+      title: "Emergency Services",
+      description: "24/7 urgent services",
+      icon: Phone,
+      href: "/explore?urgent=true",
+      color: "bg-red-500 hover:bg-red-600",
     },
     {
       id: "search",
@@ -218,7 +271,15 @@ const EnhancedUserDashboard = () => {
       description: "Your saved providers",
       icon: Heart,
       href: "/dashboard/favorites",
-      color: "bg-red-500 hover:bg-red-600",
+      color: "bg-pink-500 hover:bg-pink-600",
+    },
+    {
+      id: "repeat",
+      title: "Repeat Booking",
+      description: "Book your last service again",
+      icon: RefreshCw,
+      href: "/dashboard/repeat-booking",
+      color: "bg-cyan-500 hover:bg-cyan-600",
     },
     {
       id: "settings",
@@ -231,12 +292,15 @@ const EnhancedUserDashboard = () => {
   ];
 
   const serviceCategories = [
-    { name: "Healthcare", icon: "🏥", count: 150, color: "bg-blue-100 text-blue-700" },
-    { name: "Beauty & Spa", icon: "💄", count: 89, color: "bg-pink-100 text-pink-700" },
-    { name: "Legal Services", icon: "⚖️", count: 45, color: "bg-yellow-100 text-yellow-700" },
-    { name: "Automotive", icon: "🚗", count: 67, color: "bg-green-100 text-green-700" },
-    { name: "Education", icon: "📚", count: 23, color: "bg-purple-100 text-purple-700" },
-    { name: "Home Services", icon: "🏠", count: 34, color: "bg-orange-100 text-orange-700" },
+    { name: "Healthcare & Wellness", icon: "🏥", count: 347, color: "bg-blue-100 text-blue-700", trending: "+12%" },
+    { name: "Beauty & Personal Care", icon: "💄", count: 289, color: "bg-pink-100 text-pink-700", trending: "+8%" },
+    { name: "Home Services", icon: "🏠", count: 234, color: "bg-orange-100 text-orange-700", trending: "+15%" },
+    { name: "Legal & Financial", icon: "⚖️", count: 156, color: "bg-yellow-100 text-yellow-700", trending: "+5%" },
+    { name: "Automotive Services", icon: "🚗", count: 145, color: "bg-green-100 text-green-700", trending: "+18%" },
+    { name: "Education & Coaching", icon: "📚", count: 98, color: "bg-purple-100 text-purple-700", trending: "+22%" },
+    { name: "Business & Corporate", icon: "💼", count: 87, color: "bg-indigo-100 text-indigo-700", trending: "+9%" },
+    { name: "Property & Real Estate", icon: "🏢", count: 76, color: "bg-gray-100 text-gray-700", trending: "+6%" },
+    { name: "Travel & Documentation", icon: "✈️", count: 54, color: "bg-cyan-100 text-cyan-700", trending: "+11%" },
   ];
 
   const handleSearch = () => {
@@ -364,7 +428,7 @@ const EnhancedUserDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {quickActions.map((action) => (
                     <Link
                       key={action.id}
@@ -394,19 +458,24 @@ const EnhancedUserDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {serviceCategories.map((category) => (
                     <div
                       key={category.name}
                       onClick={() => handleQuickBook(category.name)}
                       className="cursor-pointer p-4 rounded-lg border hover:shadow-md transition-all duration-200 hover:scale-105"
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">{category.icon}</span>
-                        <div className="flex-1">
-                          <h3 className="font-medium text-sm">{category.name}</h3>
-                          <p className="text-xs text-gray-500">{category.count} providers</p>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{category.icon}</span>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-sm">{category.name}</h3>
+                            <p className="text-xs text-gray-500">{category.count} providers</p>
+                          </div>
                         </div>
+                        <Badge variant="outline" className="text-green-600 border-green-600 text-xs">
+                          {category.trending}
+                        </Badge>
                       </div>
                     </div>
                   ))}
@@ -425,17 +494,24 @@ const EnhancedUserDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                      <div className={`w-3 h-3 rounded-full ${
+                    <div key={activity.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div className={`w-3 h-3 rounded-full mt-2 ${
                         activity.status === 'confirmed' ? 'bg-green-500' :
                         activity.status === 'completed' ? 'bg-blue-500' :
+                        activity.status === 'info' ? 'bg-cyan-500' :
                         'bg-yellow-500'
                       }`}></div>
                       <div className="flex-1">
                         <p className="font-medium text-sm">{activity.title}</p>
-                        <p className="text-xs text-gray-500">{activity.time}</p>
+                        <p className="text-xs text-gray-600 mt-1">{activity.description}</p>
+                        <div className="flex items-center justify-between mt-2">
+                          <p className="text-xs text-gray-500">{activity.time}</p>
+                          {activity.amount && (
+                            <span className="text-xs font-medium text-green-600">₹{activity.amount}</span>
+                          )}
+                        </div>
                       </div>
-                      <Badge variant={activity.status === 'completed' ? 'default' : 'outline'}>
+                      <Badge variant={activity.status === 'completed' ? 'default' : activity.status === 'confirmed' ? 'default' : 'outline'} className={activity.status === 'completed' ? 'bg-blue-500' : activity.status === 'confirmed' ? 'bg-green-500' : ''}>
                         {activity.status}
                       </Badge>
                     </div>
@@ -465,7 +541,7 @@ const EnhancedUserDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {notifications.slice(0, 3).map((notification) => (
+                  {notifications.slice(0, 4).map((notification) => (
                     <div
                       key={notification.id}
                       className={`p-3 rounded-lg border cursor-pointer transition-colors ${
@@ -493,9 +569,15 @@ const EnhancedUserDashboard = () => {
                             })}
                           </p>
                         </div>
+                        {!notification.read && (
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-1"></div>
+                        )}
                       </div>
                     </div>
                   ))}
+                  <Button variant="ghost" className="w-full text-sm" onClick={() => navigate('/dashboard/notifications')}>
+                    View All Notifications ({notifications.length})
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -513,16 +595,26 @@ const EnhancedUserDashboard = () => {
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span>Profile Completion</span>
-                      <span>85%</span>
+                      <span>92%</span>
                     </div>
-                    <Progress value={85} className="h-2" />
+                    <Progress value={92} className="h-2" />
+                    <p className="text-xs text-gray-500 mt-1">Add profile photo to complete</p>
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span>Reviews Given</span>
-                      <span>12/15</span>
+                      <span>34/39</span>
                     </div>
-                    <Progress value={80} className="h-2" />
+                    <Progress value={87} className="h-2" />
+                    <p className="text-xs text-gray-500 mt-1">Help others by reviewing your experiences</p>
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-sm mb-2">
+                      <span>Loyalty Points</span>
+                      <span>2,850</span>
+                    </div>
+                    <Progress value={57} className="h-2" />
+                    <p className="text-xs text-gray-500 mt-1">1,150 points to next reward tier</p>
                   </div>
                   <div className="pt-3 space-y-2">
                     <div className="flex justify-between">

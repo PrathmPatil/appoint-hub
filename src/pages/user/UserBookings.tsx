@@ -29,6 +29,7 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
+  Plus,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -47,8 +48,159 @@ const UserBookings = () => {
     dispatch(fetchBookings());
   }, [dispatch]);
 
-  // Filter bookings for current user
-  const myBookings = bookings.filter((booking) => booking.userId === user?.id);
+  // Enhanced dummy bookings for current user
+  const myBookings = [
+    {
+      id: "1",
+      serviceId: "service-1",
+      serviceName: "Professional House Cleaning",
+      providerId: "provider-1",
+      providerName: "Elite Cleaning Services",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-22",
+      time: "10:00 AM",
+      status: "confirmed" as const,
+      amount: 2400,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-18T10:00:00Z",
+    },
+    {
+      id: "2",
+      serviceId: "service-2",
+      serviceName: "Dermatology Consultation",
+      providerId: "provider-2",
+      providerName: "Dr. Priya Sharma",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-25",
+      time: "3:00 PM",
+      status: "confirmed" as const,
+      amount: 1800,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-20T14:00:00Z",
+    },
+    {
+      id: "3",
+      serviceId: "service-3",
+      serviceName: "Car Premium Wash",
+      providerId: "provider-3",
+      providerName: "AutoCare Pro",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-18",
+      time: "2:00 PM",
+      status: "completed" as const,
+      amount: 1200,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-15T11:00:00Z",
+    },
+    {
+      id: "4",
+      serviceId: "service-4",
+      serviceName: "Legal Consultation",
+      providerId: "provider-4",
+      providerName: "Advocate Ravi Kumar",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-28",
+      time: "4:00 PM",
+      status: "pending" as const,
+      amount: 2500,
+      paymentStatus: "pending" as const,
+      createdAt: "2024-01-22T16:00:00Z",
+    },
+    {
+      id: "5",
+      serviceId: "service-5",
+      serviceName: "Physiotherapy Session",
+      providerId: "provider-5",
+      providerName: "Dr. Amit Patel",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-15",
+      time: "11:00 AM",
+      status: "completed" as const,
+      amount: 1500,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-12T09:00:00Z",
+    },
+    {
+      id: "6",
+      serviceId: "service-6",
+      serviceName: "Hair Cut & Styling",
+      providerId: "provider-6",
+      providerName: "Style Studio",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-30",
+      time: "6:00 PM",
+      status: "confirmed" as const,
+      amount: 800,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-25T18:00:00Z",
+    },
+    {
+      id: "7",
+      serviceId: "service-7",
+      serviceName: "Dental Cleaning",
+      providerId: "provider-7",
+      providerName: "Dental Care Clinic",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-12",
+      time: "9:00 AM",
+      status: "completed" as const,
+      amount: 1200,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-08T08:00:00Z",
+    },
+    {
+      id: "8",
+      serviceId: "service-8",
+      serviceName: "AC Repair Service",
+      providerId: "provider-8",
+      providerName: "CoolTech Services",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-02-02",
+      time: "11:00 AM",
+      status: "pending" as const,
+      amount: 1800,
+      paymentStatus: "pending" as const,
+      createdAt: "2024-01-28T10:00:00Z",
+    },
+    {
+      id: "9",
+      serviceId: "service-9",
+      serviceName: "Yoga Personal Training",
+      providerId: "provider-9",
+      providerName: "Wellness Yoga Studio",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-08",
+      time: "7:00 AM",
+      status: "completed" as const,
+      amount: 1000,
+      paymentStatus: "completed" as const,
+      createdAt: "2024-01-05T06:00:00Z",
+    },
+    {
+      id: "10",
+      serviceId: "service-10",
+      serviceName: "Plumbing Repair",
+      providerId: "provider-10",
+      providerName: "AquaFix Services",
+      userId: user?.id || "user-1",
+      userName: user?.name || "User",
+      date: "2024-01-05",
+      time: "3:00 PM",
+      status: "cancelled" as const,
+      amount: 900,
+      paymentStatus: "failed" as const,
+      createdAt: "2024-01-02T14:00:00Z",
+    },
+  ];
 
   const filteredBookings = myBookings.filter((booking) => {
     if (statusFilter === "all") return true;
@@ -145,11 +297,23 @@ const UserBookings = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">My Bookings</h1>
-          <p className="text-gray-600 mt-2">
-            Track and manage your service bookings
-          </p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">My Bookings</h1>
+            <p className="text-gray-600 mt-2">
+              Track and manage your service bookings
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={() => window.location.href = '/explore'}>
+              <Plus className="h-4 w-4 mr-2" />
+              Book New Service
+            </Button>
+            <Button variant="outline">
+              <Calendar className="h-4 w-4 mr-2" />
+              Schedule View
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
@@ -269,18 +433,34 @@ const UserBookings = () => {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-gray-400" />
-                        <span>{booking.date}</span>
+                        <div>
+                          <p className="font-medium">{booking.date}</p>
+                          <p className="text-xs text-gray-500">Appointment Date</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-gray-400" />
-                        <span>{booking.time}</span>
+                        <div>
+                          <p className="font-medium">{booking.time}</p>
+                          <p className="text-xs text-gray-500">Time Slot</p>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <CreditCard className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">₹{booking.amount}</span>
+                        <div>
+                          <p className="font-medium text-green-600">₹{booking.amount.toLocaleString()}</p>
+                          <p className="text-xs text-gray-500">Service Amount</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-gray-400" />
+                        <div>
+                          <p className="font-medium">Home Service</p>
+                          <p className="text-xs text-gray-500">Location</p>
+                        </div>
                       </div>
                     </div>
                   </div>

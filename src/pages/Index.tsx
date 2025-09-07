@@ -377,6 +377,7 @@ const Index = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
+              <Link to="/register">
               <Button
                 variant="outline"
                 size="lg"
@@ -384,6 +385,7 @@ const Index = () => {
               >
                 Join as Professional
               </Button>
+              </Link>
             </div>
 
             <div className="text-center mt-8">

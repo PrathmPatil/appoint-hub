@@ -142,13 +142,17 @@ const UserDashboard = () => {
                     {upcomingBookings.slice(0, 3).map((booking) => (
                       <div
                         key={booking.id}
-                        className="flex items-center space-x-4 p-4 border rounded-lg"
+                        className="flex items-center space-x-4 p-4 border rounded-lg hover:shadow-md transition-shadow"
                       >
                         <div className="flex-1">
                           <h4 className="font-medium">{booking.serviceName}</h4>
                           <p className="text-sm text-gray-600 flex items-center gap-1 mt-1">
                             <User className="h-3 w-3" />
                             {booking.providerName}
+                          </p>
+                          <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                            <MapPin className="h-3 w-3" />
+                            {booking.location}
                           </p>
                           <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                             <span className="flex items-center gap-1">
@@ -162,23 +166,27 @@ const UserDashboard = () => {
                           </div>
                         </div>
                         <div className="text-right">
+                          <p className="text-lg font-bold text-green-600 mb-2">
+                            ₹{booking.amount}
+                          </p>
                           <Badge
                             variant={
                               booking.status === "confirmed"
                                 ? "default"
+                                : booking.status === "pending"
+                                ? "secondary"
                                 : "outline"
                             }
                             className={
                               booking.status === "confirmed"
                                 ? "bg-green-600"
+                                : booking.status === "pending"
+                                ? "bg-yellow-500"
                                 : ""
                             }
                           >
                             {booking.status}
                           </Badge>
-                          <p className="text-sm font-medium mt-1">
-                            ₹{booking.amount}
-                          </p>
                         </div>
                       </div>
                     ))}

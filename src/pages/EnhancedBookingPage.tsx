@@ -412,60 +412,124 @@ const EnhancedBookingPage = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {businessStaff.map((staffMember) => (
-                      <div
-                        key={staffMember.id}
-                        className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                          selectedStaff?.id === staffMember.id
-                            ? "border-blue-500 bg-blue-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                        onClick={() => handleStaffSelect(staffMember)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Avatar>
-                            <AvatarFallback>
-                              {staffMember.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <h3 className="font-medium">{staffMember.name}</h3>
-                            <p className="text-sm text-gray-600 capitalize">
-                              {staffMember.role}
-                            </p>
-                            <div className="flex items-center gap-2 mt-1">
-                              <div className="flex items-center gap-1">
-                                <Star className="h-3 w-3 text-yellow-500" />
-                                <span className="text-xs">
-                                  {staffMember.rating}
-                                </span>
+                    {businessStaff.map((staffMember) => {
+                      const isAvailableToday = new Date().getDay() <= 5; // Simple availability check
+                      const todaySchedule = isAvailableToday ? "9:00 AM - 5:00 PM" : "Not working today";
+
+                      return (
+                        <div
+                          key={staffMember.id}
+                          className={`p-4 border rounded-lg cursor-pointer transition-all relative ${
+                            selectedStaff?.id === staffMember.id
+                              ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+                              : "border-gray-200 hover:border-gray-300 hover:shadow-md"
+                          }`}
+                          onClick={() => handleStaffSelect(staffMember)}
+                        >
+                          {/* Header with Avatar and Basic Info */}
+                          <div className="flex items-start gap-3 mb-3">
+                            <div className="relative">
+                              <Avatar className="h-12 w-12">
+                                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
+                                  {staffMember.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              {/* Availability indicator */}
+                              <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
+                                isAvailableToday ? "bg-green-500" : "bg-gray-400"
+                              }`}></div>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between">
+                                <h3 className="font-semibold text-gray-900">{staffMember.name}</h3>
+                                {selectedStaff?.id === staffMember.id && (
+                                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                    <Check className="h-3 w-3 text-white" />
+                                  </div>
+                                )}
                               </div>
-                              <span className="text-xs text-gray-500">
-                                {staffMember.experience} years exp
-                              </span>
+                              <p className="text-sm text-gray-600 capitalize font-medium">
+                                {staffMember.role}
+                              </p>
+                              <div className="flex items-center gap-3 mt-1">
+                                <div className="flex items-center gap-1">
+                                  <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                                  <span className="text-sm font-medium">
+                                    {staffMember.rating}
+                                  </span>
+                                  <span className="text-xs text-gray-500">
+                                    (120+ reviews)
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="mt-2">
-                          <div className="flex flex-wrap gap-1">
-                            {staffMember.specialties
-                              .slice(0, 2)
-                              .map((specialty) => (
+
+                          {/* Experience and Availability */}
+                          <div className="mb-3">
+                            <div className="flex items-center justify-between text-sm">
+                              <div className="flex items-center gap-1">
+                                <Clock className="h-3 w-3 text-gray-400" />
+                                <span className="text-gray-600">{staffMember.experience} years experience</span>
+                              </div>
+                              <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                isAvailableToday
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-600"
+                              }`}>
+                                {isAvailableToday ? "Available today" : "Not available"}
+                              </div>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              Today: {todaySchedule}
+                            </div>
+                          </div>
+
+                          {/* Specialties */}
+                          <div className="mb-3">
+                            <div className="text-xs text-gray-600 mb-1 font-medium">Specializations:</div>
+                            <div className="flex flex-wrap gap-1">
+                              {staffMember.specialties.map((specialty, index) => (
                                 <Badge
                                   key={specialty}
                                   variant="outline"
-                                  className="text-xs"
+                                  className={`text-xs ${
+                                    index < 2
+                                      ? "bg-blue-50 border-blue-200 text-blue-700"
+                                      : "bg-gray-50 border-gray-200 text-gray-600"
+                                  }`}
                                 >
                                   {specialty}
                                 </Badge>
                               ))}
+                            </div>
                           </div>
+
+                          {/* Staff Highlights */}
+                          <div className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-1">
+                                <Users className="h-3 w-3 text-gray-400" />
+                                <span className="text-gray-600">Preferred by 85% clients</span>
+                              </div>
+                            </div>
+                            {selectedStaff?.id === staffMember.id && (
+                              <Badge className="bg-blue-600 text-white text-xs">
+                                Selected
+                              </Badge>
+                            )}
+                          </div>
+
+                          {/* Selection overlay */}
+                          {selectedStaff?.id === staffMember.id && (
+                            <div className="absolute inset-0 bg-blue-500 bg-opacity-5 rounded-lg pointer-events-none"></div>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>

@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { store } from "@/store";
 import { useAppSelector } from "@/store/hooks";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import Layout from "@/components/layout/Layout";
 
 // Pages
 import Index from "./pages/Index";
@@ -28,6 +29,8 @@ import AdminVerification from "./pages/admin/AdminVerification";
 import ProviderServices from "./pages/provider/ProviderServices";
 import ProviderEarnings from "./pages/provider/ProviderEarnings";
 import BusinessManagement from "./pages/provider/BusinessManagement";
+import ServiceBilling from "./pages/provider/ServiceBilling";
+import BusinessSelector from "./pages/provider/BusinessSelector";
 
 // User pages
 import UserBookings from "./pages/user/UserBookings";
@@ -50,6 +53,7 @@ import BookingConfirmation from "./pages/BookingConfirmation";
 // User flow pages
 import ServiceDiscovery from "./pages/user/ServiceDiscovery";
 import StaffSelectionPage from "./pages/user/StaffSelectionPage";
+import BillPayment from "./pages/user/BillPayment";
 
 // Verification pages
 import VerificationSettings from "./pages/VerificationSettings";
@@ -78,7 +82,7 @@ const DashboardRouter = () => {
       }
       // Route based on provider type
       if (user.providerType === "business") {
-        return <Navigate to="/dashboard/business" replace />;
+        return <Navigate to="/dashboard/businesses" replace />;
       } else {
         return <ServiceProviderDashboard />;
       }
@@ -96,7 +100,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
+          <Layout>
+            <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
@@ -106,7 +111,9 @@ const App = () => (
             <Route path="/services" element={<ServiceDiscovery />} />
             <Route path="/staff/:businessId" element={<StaffSelectionPage />} />
             <Route path="/provider/:providerId" element={<ProviderDetails />} />
+            <Route path="/bill/:billId" element={<BillPayment />} />
             <Route path="/guide" element={<RoutingGuide />} />
+            <Route path="/booking" element={<IndividualBookingPage />} />
             <Route path="/booking/:providerId" element={<IndividualBookingPage />} />
             <Route
               path="/business-booking/:providerId"
@@ -188,10 +195,26 @@ const App = () => (
               }
             />
             <Route
+              path="/dashboard/businesses"
+              element={
+                <ProtectedRoute requiredRole="service_provider">
+                  <BusinessSelector />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/dashboard/business"
               element={
                 <ProtectedRoute requiredRole="service_provider">
                   <BusinessManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/provider/billing/:appointmentId"
+              element={
+                <ProtectedRoute requiredRole="service_provider">
+                  <ServiceBilling />
                 </ProtectedRoute>
               }
             />
@@ -276,7 +299,8 @@ const App = () => (
 
             {/* Catch-all route */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
+            </Routes>
+          </Layout>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

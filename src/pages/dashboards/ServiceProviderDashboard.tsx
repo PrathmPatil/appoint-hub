@@ -61,6 +61,7 @@ import {
   Activity,
   Package,
   CheckCircle,
+  BarChart3,
 } from "lucide-react";
 import {
   LineChart,
@@ -137,12 +138,12 @@ const ServiceProviderDashboard = () => {
 
   // Mock data
   const earningsData = [
-    { month: "Jan", earnings: 1200, bookings: 15 },
-    { month: "Feb", earnings: 1500, bookings: 18 },
-    { month: "Mar", earnings: 1800, bookings: 22 },
-    { month: "Apr", earnings: 2200, bookings: 28 },
-    { month: "May", earnings: 2800, bookings: 35 },
-    { month: "Jun", earnings: 3200, bookings: 42 },
+    { month: "Jul", earnings: 45000, bookings: 58, rating: 4.6, customers: 42 },
+    { month: "Aug", earnings: 52000, bookings: 67, rating: 4.7, customers: 51 },
+    { month: "Sep", earnings: 48000, bookings: 61, rating: 4.8, customers: 46 },
+    { month: "Oct", earnings: 63000, bookings: 78, rating: 4.9, customers: 62 },
+    { month: "Nov", earnings: 71000, bookings: 89, rating: 4.9, customers: 69 },
+    { month: "Dec", earnings: 85000, bookings: 102, rating: 5.0, customers: 81 },
   ];
 
   const upcomingBookings = [
@@ -150,57 +151,113 @@ const ServiceProviderDashboard = () => {
       id: 1,
       customer: "Sarah Johnson",
       customerPhone: "+91 98765 43210",
-      service: "Home Cleaning",
-      date: "2024-01-15",
+      service: "Professional House Cleaning",
+      date: "2024-01-20",
       time: "10:00 AM",
-      location: "123 Oak Street, Mumbai",
-      price: 1200,
+      location: "123 Oak Street, Bandra West, Mumbai",
+      price: 2400,
       duration: "3 hours",
       status: "confirmed",
       customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=sarah",
-      notes: "Please bring eco-friendly cleaning supplies",
+      notes: "Please bring eco-friendly cleaning supplies. Pet-friendly home with 2 cats.",
+      customerRating: 4.8,
+      repeatCustomer: true,
     },
     {
       id: 2,
-      customer: "Mike Davis",
+      customer: "Rajesh Patel",
       customerPhone: "+91 98765 43211",
-      service: "Deep Cleaning",
-      date: "2024-01-16",
+      service: "Deep Cleaning Service",
+      date: "2024-01-20",
       time: "2:00 PM",
-      location: "456 Pine Avenue, Delhi",
-      price: 1800,
+      location: "456 Pine Avenue, Andheri East, Mumbai",
+      price: 3200,
       duration: "4 hours",
       status: "pending",
-      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=mike",
-      notes: "Focus on kitchen and bathrooms",
+      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=rajesh",
+      notes: "3 BHK apartment. Focus on kitchen and bathrooms. First-time customer.",
+      customerRating: null,
+      repeatCustomer: false,
     },
     {
       id: 3,
-      customer: "Emily Chen",
+      customer: "Priya Sharma",
       customerPhone: "+91 98765 43212",
       service: "Office Cleaning",
-      date: "2024-01-17",
-      time: "6:00 PM",
-      location: "789 Business Park, Bangalore",
-      price: 2500,
+      date: "2024-01-21",
+      time: "7:00 PM",
+      location: "789 Business Park, Powai, Mumbai",
+      price: 4500,
       duration: "5 hours",
       status: "confirmed",
-      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=emily",
-      notes: "After office hours cleaning required",
+      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=priya",
+      notes: "After office hours cleaning. 50 workstations + conference rooms.",
+      customerRating: 4.9,
+      repeatCustomer: true,
     },
     {
       id: 4,
-      customer: "John Smith",
+      customer: "Amit Kumar",
       customerPhone: "+91 98765 43213",
-      service: "Car Wash",
-      date: "2024-01-18",
+      service: "Post-Construction Cleaning",
+      date: "2024-01-22",
       time: "9:00 AM",
-      location: "321 Residential Complex, Pune",
-      price: 800,
-      duration: "2 hours",
+      location: "321 New Complex, Thane West",
+      price: 5500,
+      duration: "6 hours",
       status: "pending",
-      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=john",
-      notes: "Premium wash with interior cleaning",
+      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=amit",
+      notes: "New 2 BHK flat. Heavy dust cleaning required. Bring protective gear.",
+      customerRating: null,
+      repeatCustomer: false,
+    },
+    {
+      id: 5,
+      customer: "Neha Agarwal",
+      customerPhone: "+91 98765 43214",
+      service: "Move-in Cleaning",
+      date: "2024-01-22",
+      time: "11:00 AM",
+      location: "567 Garden View, Malad West, Mumbai",
+      price: 2800,
+      duration: "4 hours",
+      status: "confirmed",
+      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=neha",
+      notes: "Complete sanitization needed. Moving in next day.",
+      customerRating: 4.7,
+      repeatCustomer: false,
+    },
+    {
+      id: 6,
+      customer: "Vikram Singh",
+      customerPhone: "+91 98765 43215",
+      service: "Weekly Maintenance",
+      date: "2024-01-23",
+      time: "8:00 AM",
+      location: "890 Royal Heights, Juhu, Mumbai",
+      price: 1800,
+      duration: "2.5 hours",
+      status: "confirmed",
+      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=vikram",
+      notes: "Regular weekly cleaning. Key available with security.",
+      customerRating: 5.0,
+      repeatCustomer: true,
+    },
+    {
+      id: 7,
+      customer: "Sunita Joshi",
+      customerPhone: "+91 98765 43216",
+      service: "Carpet & Sofa Cleaning",
+      date: "2024-01-24",
+      time: "3:00 PM",
+      location: "234 Sea View Apartments, Worli, Mumbai",
+      price: 3500,
+      duration: "3 hours",
+      status: "pending",
+      customerAvatar: "https://api.dicebear.com/7.x/personas/svg?seed=sunita",
+      notes: "Deep cleaning for 2 sofas and 3 carpets. Stain removal needed.",
+      customerRating: 4.6,
+      repeatCustomer: true,
     },
   ];
 
@@ -251,34 +308,98 @@ const ServiceProviderDashboard = () => {
     {
       id: 1,
       customer: "Sarah Johnson",
-      amount: 1200,
-      date: "2024-01-10",
+      service: "Professional House Cleaning",
+      amount: 2400,
+      date: "2024-01-18",
       status: "completed",
       method: "UPI",
+      transactionId: "UPI2401180001",
+      commission: 240,
+      netAmount: 2160,
     },
     {
       id: 2,
-      customer: "Mike Davis",
-      amount: 1800,
-      date: "2024-01-09",
+      customer: "Rajesh Patel",
+      service: "Deep Cleaning Service",
+      amount: 3200,
+      date: "2024-01-17",
       status: "completed",
       method: "Card",
+      transactionId: "CARD2401170023",
+      commission: 320,
+      netAmount: 2880,
     },
     {
       id: 3,
-      customer: "Emily Chen",
-      amount: 2500,
-      date: "2024-01-08",
+      customer: "Priya Sharma",
+      service: "Office Cleaning",
+      amount: 4500,
+      date: "2024-01-16",
       status: "pending",
       method: "Bank Transfer",
+      transactionId: "BANK2401160045",
+      commission: 450,
+      netAmount: 4050,
     },
     {
       id: 4,
-      customer: "John Smith",
-      amount: 800,
-      date: "2024-01-07",
+      customer: "Amit Kumar",
+      service: "Post-Construction Cleaning",
+      amount: 5500,
+      date: "2024-01-15",
       status: "completed",
       method: "Cash",
+      transactionId: "CASH2401150012",
+      commission: 550,
+      netAmount: 4950,
+    },
+    {
+      id: 5,
+      customer: "Neha Agarwal",
+      service: "Move-in Cleaning",
+      amount: 2800,
+      date: "2024-01-14",
+      status: "completed",
+      method: "UPI",
+      transactionId: "UPI2401140078",
+      commission: 280,
+      netAmount: 2520,
+    },
+    {
+      id: 6,
+      customer: "Vikram Singh",
+      service: "Weekly Maintenance",
+      amount: 1800,
+      date: "2024-01-13",
+      status: "completed",
+      method: "UPI",
+      transactionId: "UPI2401130156",
+      commission: 180,
+      netAmount: 1620,
+    },
+    {
+      id: 7,
+      customer: "Ravi Gupta",
+      service: "Carpet Cleaning",
+      amount: 2200,
+      date: "2024-01-12",
+      status: "completed",
+      method: "Card",
+      transactionId: "CARD2401120089",
+      commission: 220,
+      netAmount: 1980,
+    },
+    {
+      id: 8,
+      customer: "Meera Shah",
+      service: "Kitchen Deep Clean",
+      amount: 1500,
+      date: "2024-01-11",
+      status: "refunded",
+      method: "UPI",
+      transactionId: "UPI2401110234",
+      commission: 0,
+      netAmount: 0,
     },
   ];
 
@@ -297,7 +418,7 @@ const ServiceProviderDashboard = () => {
   // Calculate stats
   const totalEarnings = recentPayments.reduce(
     (sum, payment) =>
-      payment.status === "completed" ? sum + payment.amount : sum,
+      payment.status === "completed" ? sum + payment.netAmount : sum,
     0,
   );
   const pendingBookings = upcomingBookings.filter(
@@ -309,6 +430,8 @@ const ServiceProviderDashboard = () => {
   const activeServices = myServices.filter((s) => s.availability).length;
   const averageRating =
     myServices.reduce((sum, s) => sum + s.rating, 0) / myServices.length;
+  const totalBookingsThisMonth = 102;
+  const customerRetentionRate = 78;
 
   // Quick Actions
   const quickActions = [
@@ -320,25 +443,55 @@ const ServiceProviderDashboard = () => {
       action: () => setIsCreateServiceOpen(true),
     },
     {
-      title: "View All Bookings",
-      description: "Manage your appointments",
-      icon: Calendar,
+      title: "Accept Bookings",
+      description: "Review pending requests",
+      icon: CheckCircle,
       color: "bg-green-500 hover:bg-green-600",
       action: () => setActiveTab("bookings"),
+      badge: pendingBookings,
     },
     {
-      title: "Payment History",
-      description: "View earnings and transactions",
-      icon: CreditCard,
+      title: "View Earnings",
+      description: "Track payments & analytics",
+      icon: TrendingUp,
       color: "bg-purple-500 hover:bg-purple-600",
-      action: () => setActiveTab("payments"),
+      action: () => setActiveTab("analytics"),
+    },
+    {
+      title: "Customer Messages",
+      description: "Chat with customers",
+      icon: MessageSquare,
+      color: "bg-cyan-500 hover:bg-cyan-600",
+      action: () => console.log("Messages"),
+      badge: 3,
+    },
+    {
+      title: "Manage Calendar",
+      description: "Set availability & schedule",
+      icon: Calendar,
+      color: "bg-orange-500 hover:bg-orange-600",
+      action: () => console.log("Calendar"),
+    },
+    {
+      title: "Business Analytics",
+      description: "Performance insights",
+      icon: BarChart3,
+      color: "bg-indigo-500 hover:bg-indigo-600",
+      action: () => setActiveTab("analytics"),
     },
     {
       title: "Account Settings",
       description: "Update your profile",
       icon: Settings,
-      color: "bg-orange-500 hover:bg-orange-600",
+      color: "bg-gray-500 hover:bg-gray-600",
       action: () => setIsProfileEditOpen(true),
+    },
+    {
+      title: "Emergency Support",
+      description: "24/7 provider assistance",
+      icon: Phone,
+      color: "bg-red-500 hover:bg-red-600",
+      action: () => console.log("Emergency Support"),
     },
   ];
 
@@ -434,16 +587,21 @@ const ServiceProviderDashboard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {quickActions.map((action, index) => {
                 const Icon = action.icon;
                 return (
                   <Button
                     key={index}
                     variant="outline"
-                    className="h-auto p-4 flex flex-col items-center space-y-2 hover:shadow-md transition-shadow"
+                    className="h-auto p-4 flex flex-col items-center space-y-2 hover:shadow-md transition-shadow relative"
                     onClick={action.action}
                   >
+                    {action.badge && action.badge > 0 && (
+                      <Badge className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-1 text-xs">
+                        {action.badge}
+                      </Badge>
+                    )}
                     <div
                       className={`w-10 h-10 rounded-lg ${action.color} flex items-center justify-center`}
                     >
@@ -482,31 +640,35 @@ const ServiceProviderDashboard = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <StatsCard
                 title="Monthly Earnings"
-                value={`₹${totalEarnings.toLocaleString()}`}
-                change="+18% from last month"
+                value={`₹${(85000).toLocaleString()}`}
+                change="+19.7% from last month"
                 changeType="positive"
                 icon={DollarSign}
+                description="Net after commission"
               />
               <StatsCard
-                title="Active Services"
-                value={activeServices.toString()}
-                change={`${myServices.length} total services`}
-                changeType="positive"
-                icon={Package}
-              />
-              <StatsCard
-                title="Pending Bookings"
-                value={pendingBookings.toString()}
-                change={`${confirmedBookings} confirmed`}
+                title="Total Bookings"
+                value={totalBookingsThisMonth.toString()}
+                change={`+14 this week`}
                 changeType="positive"
                 icon={Calendar}
+                description="This month"
               />
               <StatsCard
-                title="Average Rating"
-                value={averageRating.toFixed(1)}
-                change="Based on recent reviews"
+                title="Customer Rating"
+                value={"5.0"}
+                change="Perfect rating this month!"
                 changeType="positive"
                 icon={Star}
+                description="Based on 89 reviews"
+              />
+              <StatsCard
+                title="Retention Rate"
+                value={`${customerRetentionRate}%`}
+                change="+5% from last month"
+                changeType="positive"
+                icon={Users}
+                description="Repeat customers"
               />
             </div>
 
@@ -1008,36 +1170,51 @@ const ServiceProviderDashboard = () => {
                   {recentPayments.map((payment) => (
                     <div
                       key={payment.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow"
                     >
                       <div className="flex items-center space-x-3">
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center ${
                             payment.status === "completed"
                               ? "bg-green-100"
-                              : "bg-yellow-100"
+                              : payment.status === "pending"
+                              ? "bg-yellow-100"
+                              : "bg-red-100"
                           }`}
                         >
                           {payment.status === "completed" ? (
                             <Check className="h-5 w-5 text-green-600" />
-                          ) : (
+                          ) : payment.status === "pending" ? (
                             <Clock className="h-5 w-5 text-yellow-600" />
+                          ) : (
+                            <X className="h-5 w-5 text-red-600" />
                           )}
                         </div>
                         <div>
                           <p className="font-medium">{payment.customer}</p>
-                          <p className="text-sm text-gray-500">
-                            {payment.date} • {payment.method}
+                          <p className="text-sm text-gray-600">{payment.service}</p>
+                          <p className="text-xs text-gray-500">
+                            {payment.date} • {payment.method} • ID: {payment.transactionId}
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">₹{payment.amount}</p>
+                        <p className="font-medium text-lg">₹{payment.amount}</p>
+                        <p className="text-sm text-gray-500">
+                          Net: ₹{payment.netAmount}
+                        </p>
                         <Badge
                           variant={
                             payment.status === "completed"
                               ? "default"
-                              : "secondary"
+                              : payment.status === "pending"
+                              ? "secondary"
+                              : "destructive"
+                          }
+                          className={
+                            payment.status === "completed"
+                              ? "bg-green-600"
+                              : ""
                           }
                         >
                           {payment.status}

@@ -57,8 +57,12 @@ const PaymentSuccess = () => {
           <CardContent className="space-y-4">
             {/* Service Info */}
             <div>
-              <h3 className="font-medium text-gray-900">{booking.service}</h3>
-              <p className="text-sm text-gray-600">{booking.provider}</p>
+              <h3 className="font-medium text-gray-900">
+                {typeof booking.service === 'object' ? booking.service?.name || 'Service' : booking.service}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {typeof booking.provider === 'object' ? booking.provider?.name || 'Provider' : booking.provider}
+              </p>
             </div>
 
             <Separator />
@@ -69,7 +73,12 @@ const PaymentSuccess = () => {
                 <Calendar className="h-4 w-4 mr-3 text-gray-400" />
                 <div>
                   <p className="text-sm font-medium">Date</p>
-                  <p className="text-sm text-gray-600">{booking.date}</p>
+                  <p className="text-sm text-gray-600">
+                    {booking.date instanceof Date
+                      ? booking.date.toLocaleDateString()
+                      : booking.date || 'Date not specified'
+                    }
+                  </p>
                 </div>
               </div>
 
@@ -78,7 +87,7 @@ const PaymentSuccess = () => {
                 <div>
                   <p className="text-sm font-medium">Time</p>
                   <p className="text-sm text-gray-600">
-                    {booking.time} ({booking.duration})
+                    {booking.time} ({typeof booking.duration === 'object' ? booking.duration?.duration || booking.duration?.name || 'Duration not specified' : booking.duration})
                   </p>
                 </div>
               </div>
@@ -87,7 +96,9 @@ const PaymentSuccess = () => {
                 <MapPin className="h-4 w-4 mr-3 text-gray-400" />
                 <div>
                   <p className="text-sm font-medium">Location</p>
-                  <p className="text-sm text-gray-600">{booking.location}</p>
+                  <p className="text-sm text-gray-600">
+                    {typeof booking.location === 'object' ? booking.location?.name || booking.location?.location || 'Location not specified' : booking.location}
+                  </p>
                 </div>
               </div>
             </div>

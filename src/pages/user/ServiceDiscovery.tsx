@@ -51,6 +51,9 @@ import { fetchBusinesses, fetchStaff } from "@/store/slices/businessSlice";
 import { VerificationBadge, TrustScoreBadge } from "@/components/ui/verification-badge";
 import { calculateMockTrustScore } from "@/lib/trustScore";
 
+// Global counter for unique provider IDs
+let providerIdCounter = 0;
+
 interface ServiceProvider {
   id: string;
   name: string;
@@ -190,7 +193,7 @@ const ServiceDiscovery = () => {
             "travel",
           ];
           const category = categories[globalIndex % categories.length];
-          const providerId = `individual-${pageNum}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          const providerId = `individual-${++providerIdCounter}`;
           const trustScoreData = calculateMockTrustScore(providerId);
 
           return {
@@ -897,7 +900,7 @@ const ServiceDiscovery = () => {
 
           <div className="flex flex-wrap gap-1 mb-3 justify-center">
             {provider.tags.map((tag, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
+              <Badge key={`${provider.id}-tag-${index}-${tag}`} variant="outline" className="text-xs">
                 {tag}
               </Badge>
             ))}
@@ -1084,8 +1087,8 @@ const ServiceDiscovery = () => {
                   <Clock className="h-3 w-3 mr-1" />
                   Open Today
                 </Badge>
-                {provider.amenities.slice(0, 1).map((amenity) => (
-                  <Badge key={amenity} variant="outline" className="text-xs">
+                {provider.amenities.slice(0, 1).map((amenity, index) => (
+                  <Badge key={`${provider.id}-amenity-${index}-${amenity}`} variant="outline" className="text-xs">
                     {amenity}
                   </Badge>
                 ))}
@@ -1131,12 +1134,6 @@ const ServiceDiscovery = () => {
           {/* Header Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link to="/" className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">AH</span>
-                </div>
-                <h1 className="text-xl font-bold text-blue-600">AppointHub</h1>
-              </Link>
               <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
                 <ArrowLeft className="h-5 w-5 mr-2" />
                 Back
@@ -1487,7 +1484,7 @@ const ServiceDiscovery = () => {
               }
             >
               {Array.from({ length: 6 }).map((_, index) => (
-                <Card key={index}>
+                <Card key={`skeleton-${index}`}>
                   <CardContent className="p-6">
                     <Skeleton className="w-24 h-24 rounded-full mx-auto mb-4" />
                     <Skeleton className="h-4 w-32 mx-auto mb-2" />

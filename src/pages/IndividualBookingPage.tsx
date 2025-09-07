@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 
 interface TimeSlot {
+  id: string;
   time: string;
   available: boolean;
   price: number;
@@ -212,15 +213,16 @@ const IndividualBookingPage = () => {
     for (let hour = startHour; hour < endHour; hour++) {
       for (let minute of [0, 30]) {
         if (hour === endHour - 1 && minute === 30) break; // Don't create slot too close to closing
-        
+
         const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
         const displayTime = new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
           hour: 'numeric',
           minute: '2-digit',
           hour12: true
         });
-        
+
         slots.push({
+          id: `slot-${hour}-${minute}-${Math.random().toString(36).substr(2, 6)}`,
           time: displayTime,
           available: Math.random() > 0.3, // Randomly make some slots unavailable
           price: selectedService.price,
@@ -335,26 +337,37 @@ const IndividualBookingPage = () => {
             {/* Progress Steps */}
             <div className="mb-8">
               <div className="flex items-center justify-between">
-                {[
-                  { num: 1, title: "Select Service", active: step >= 1, completed: step > 1 },
-                  { num: 2, title: "Choose Date & Time", active: step >= 2, completed: step > 2 },
-                  { num: 3, title: "Your Details", active: step >= 3, completed: step > 3 },
-                  { num: 4, title: "Confirmation", active: step >= 4, completed: false },
-                ].map((stepItem, index) => (
-                  <div key={stepItem.num} className="flex items-center">
-                    <div className={`
-                      w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
-                      ${stepItem.completed ? 'bg-green-500 text-white' : 
-                        stepItem.active ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'}
-                    `}>
-                      {stepItem.completed ? <Check className="h-4 w-4" /> : stepItem.num}
-                    </div>
-                    <span className={`ml-2 text-sm ${stepItem.active ? 'font-medium' : 'text-gray-500'}`}>
-                      {stepItem.title}
-                    </span>
-                    {index < 3 && <div className="w-8 h-px bg-gray-300 mx-4"></div>}
-                  </div>
-                ))}
+                {(() => {
+                  const steps = [
+                    { num: 1, title: "Select Service", active: step >= 1, completed: step > 1 },
+                    { num: 2, title: "Choose Date & Time", active: step >= 2, completed: step > 2 },
+                    { num: 3, title: "Your Details", active: step >= 3, completed: step > 3 },
+                    { num: 4, title: "Confirmation", active: step >= 4, completed: false },
+                  ];
+                  const elements: React.ReactNode[] = [];
+                  steps.forEach((stepItem, index) => {
+                    elements.push(
+                      <div className="flex items-center" key={`step-${stepItem.num}`}>
+                        <div className={`
+                          w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
+                          ${stepItem.completed ? 'bg-green-500 text-white' :
+                            stepItem.active ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'}
+                        `}>
+                          {stepItem.completed ? <Check className="h-4 w-4" /> : stepItem.num}
+                        </div>
+                        <span className={`ml-2 text-sm ${stepItem.active ? 'font-medium' : 'text-gray-500'}`}>
+                          {stepItem.title}
+                        </span>
+                      </div>
+                    );
+                    if (index < steps.length - 1) {
+                      elements.push(
+                        <div className="w-8 h-px bg-gray-300 mx-4" key={`connector-${index}`}></div>
+                      );
+                    }
+                  });
+                  return elements;
+                })()}
               </div>
             </div>
 
@@ -390,9 +403,8 @@ const IndividualBookingPage = () => {
                             </div>
                           </div>
                           <div className="text-right ml-4">
-                            <p className="text-2xl font-bold text-green-600">₹{service.price}</p>
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               className="mt-2"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -442,14 +454,13 @@ const IndividualBookingPage = () => {
                             {availableSlots.length > 0 ? (
                               availableSlots.map((slot) => (
                                 <Button
-                                  key={slot.time}
+                                  key={slot.id}
                                   variant={formData.selectedTime === slot.time ? "default" : "outline"}
-                                  className="w-full justify-between"
+                                  className="w-full"
                                   disabled={!slot.available}
                                   onClick={() => handleTimeSelect(slot.time)}
                                 >
                                   <span>{slot.time}</span>
-                                  <span className="text-sm">₹{slot.price}</span>
                                 </Button>
                               ))
                             ) : (
@@ -526,8 +537,8 @@ const IndividualBookingPage = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {provider.languages.map((lang: string) => (
-                          <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                        {provider.languages.map((lang: string, index: number) => (
+                          <SelectItem key={`lang-${index}-${lang}`} value={lang}>{lang}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -665,19 +676,19 @@ const IndividualBookingPage = () => {
                   )}
                   
                   <div className="border-t pt-4">
-                    <div className="flex justify-between items-center">
-                      <span>Service Cost</span>
-                      <span className="font-medium">₹{selectedService.price}</span>
-                    </div>
-                    {formData.isHomeService && (
-                      <div className="flex justify-between items-center">
-                        <span>Home Service</span>
-                        <span className="font-medium">₹200</span>
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Info className="h-4 w-4 text-blue-600" />
+                        <span className="font-medium text-blue-800">Payment Information</span>
                       </div>
-                    )}
-                    <div className="flex justify-between items-center text-lg font-bold mt-2">
-                      <span>Total</span>
-                      <span>₹{selectedService.price + (formData.isHomeService ? 200 : 0)}</span>
+                      <p className="text-sm text-blue-700">
+                        No upfront payment required! You'll pay only after receiving your service based on what you actually use.
+                      </p>
+                      {formData.isHomeService && (
+                        <p className="text-xs text-blue-600 mt-1">
+                          ✓ Home service requested - charges will apply
+                        </p>
+                      )}
                     </div>
                   </div>
                 </CardContent>
